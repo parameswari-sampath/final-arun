@@ -2,6 +2,7 @@ package main
 
 import (
 	"final/internal/config"
+	"final/internal/database"
 	"final/internal/handlers"
 	"final/internal/middleware"
 	"final/pkg/logger"
@@ -19,6 +20,12 @@ func main() {
 
 	// Load configuration
 	cfg := config.Load()
+
+	// Connect to database
+	if err := database.Connect(cfg); err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer database.Close()
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
